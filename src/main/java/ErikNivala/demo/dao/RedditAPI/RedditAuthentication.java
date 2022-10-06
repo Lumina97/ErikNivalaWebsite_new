@@ -21,8 +21,13 @@ import org.springframework.expression.spel.ast.NullLiteral;
 public class RedditAuthentication {
 
     private RedditAPITokens token = new RedditAPITokens();
+    private final String tokenFilePath = "E:\\Dev\\Java\\demo\\src\\main\\resources\\TokenFile";
 
     public RedditAPITokens getTokens() {
+        if(token.getAccess_Token() == null || token.getAccess_Token().isEmpty())
+            getAccessToken();
+
+
         return token;
     }
 
@@ -59,7 +64,7 @@ public class RedditAuthentication {
             String userPassword = "ZHmLbNUoaVSVdw" + ":" + "W0bNZeU8oYaUxCzqcWuf89JLMnqMVg";
             String Encoded = Base64.getEncoder().encodeToString(userPassword.getBytes());
 
-            //requestbody
+            //request body
             String sBody = "grant_type=refresh_token&refresh_token=" + token.getRefresh_token();
 
             HttpRequest postRequest = HttpRequest.newBuilder()
@@ -101,7 +106,7 @@ public class RedditAuthentication {
 
     private boolean readTokenFile() {
         try {
-            Object tokens = new JSONParser().parse(Files.readString(Paths.get("E:\\Dev\\Java\\demo\\src\\main\\resources\\TokenFile")));
+            Object tokens = new JSONParser().parse(Files.readString(Paths.get(tokenFilePath)));
             JSONObject ob = (JSONObject) tokens;
 
             token.setRefresh_token((String) ob.get("refresh_token"));
@@ -124,7 +129,7 @@ public class RedditAuthentication {
         Gson gson = new Gson();
         String tokenString = gson.toJson(token);
         try {
-            Files.writeString(Paths.get("E:\\Dev\\Java\\demo\\src\\main\\resources\\TokenFile"), tokenString);
+            Files.writeString(Paths.get(tokenFilePath), tokenString);
         } catch (IOException e) {
             System.out.println("There was an error writing tokens to file!");
             System.out.println(e.getMessage());

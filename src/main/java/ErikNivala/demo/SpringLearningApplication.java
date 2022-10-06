@@ -1,6 +1,7 @@
 package ErikNivala.demo;
 
 import ErikNivala.demo.dao.RedditAPI.RedditAuthentication;
+import ErikNivala.demo.dao.RedditAPI.SubredditValidator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,8 +10,8 @@ public class SpringLearningApplication {
 
 	public static void main(String[] args) {
 		//SpringApplication.run(SpringLearningApplication.class, args);
-		RedditAuthentication auth = new RedditAuthentication();
-		System.out.println(auth.getAccessToken());
+		SubredditValidator valid = new SubredditValidator();
+		valid.validateSubreddit("backkjhfground");
 	}
 
 }
