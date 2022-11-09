@@ -13,34 +13,32 @@ import java.util.Base64;
 import java.util.Date;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
-import org.springframework.expression.spel.ast.NullLiteral;
 
 public class RedditAuthentication {
 
-    private RedditAPITokens token = new RedditAPITokens();
+    private RedditAPITokens APITokens = new RedditAPITokens();
     private final String tokenFilePath = "E:\\Dev\\Java\\demo\\src\\main\\resources\\TokenFile";
 
     public RedditAPITokens getTokens() {
-        if(token.getAccess_Token() == null || token.getAccess_Token().isEmpty())
+        if(APITokens.getAccess_Token() == null || APITokens.getAccess_Token().isEmpty())
             getAccessToken();
 
 
-        return token;
+        return APITokens;
     }
 
 
     public String getAccessToken() {
-        if (token.getAccess_Token() == null || token.getAccess_Token().isEmpty()) {
+        if (APITokens.getAccess_Token() == null || APITokens.getAccess_Token().isEmpty()) {
            if( refreshToken()){
-               return token.getAccess_Token();
+               return APITokens.getAccess_Token();
            }
            return null;
         }
 
-        return token.getAccess_Token();
+        return APITokens.getAccess_Token();
     }
 
     private boolean refreshToken() {
@@ -65,7 +63,7 @@ public class RedditAuthentication {
             String Encoded = Base64.getEncoder().encodeToString(userPassword.getBytes());
 
             //request body
-            String sBody = "grant_type=refresh_token&refresh_token=" + token.getRefresh_token();
+            String sBody = "grant_type=refresh_token&refresh_token=" + APITokens.getRefresh_token();
 
             HttpRequest postRequest = HttpRequest.newBuilder()
                     .uri(new URI("https://www.reddit.com/api/v1/access_token"))
@@ -86,9 +84,9 @@ public class RedditAuthentication {
                 throw new RuntimeException(error);
             }
 
-            token.setAccess_Token((String) ob.get("access_token"));
-            token.setRefresh_token((String) ob.get("refresh_token"));
-            token.setLastTokenRefreshTime(new Date());
+            APITokens.setAccess_Token((String) ob.get("access_token"));
+            APITokens.setRefresh_token((String) ob.get("refresh_token"));
+            APITokens.setLastTokenRefreshTime(new Date());
 
             return true;
         } catch (URISyntaxException e) {
@@ -109,9 +107,9 @@ public class RedditAuthentication {
             Object tokens = new JSONParser().parse(Files.readString(Paths.get(tokenFilePath)));
             JSONObject ob = (JSONObject) tokens;
 
-            token.setRefresh_token((String) ob.get("refresh_token"));
-            token.setAccess_Token((String) ob.get("access_token"));
-            System.out.println("Read Token File. \nAccess: " + token.getAccess_Token() + "\nrefresh: " + token.getRefresh_token());
+            APITokens.setRefresh_token((String) ob.get("refresh_token"));
+            APITokens.setAccess_Token((String) ob.get("access_token"));
+            System.out.println("Read Token File. \nAccess: " + APITokens.getAccess_Token() + "\nrefresh: " + APITokens.getRefresh_token());
             return true;
 
         } catch (IOException e) {
@@ -127,7 +125,7 @@ public class RedditAuthentication {
 
     private boolean writeTokenFile() {
         Gson gson = new Gson();
-        String tokenString = gson.toJson(token);
+        String tokenString = gson.toJson(APITokens);
         try {
             Files.writeString(Paths.get(tokenFilePath), tokenString);
         } catch (IOException e) {

@@ -12,7 +12,6 @@ import java.net.http.HttpResponse;
 
 public class SubredditValidator {
 
-    final String oAuthURL = "https://oauth.reddit.com";
     private RedditAPITokens tokens;
 
     private RedditAuthentication authentication = new RedditAuthentication();
@@ -37,7 +36,7 @@ public class SubredditValidator {
 
 
     private boolean checkSubredditValidity(String subreddit) {
-        String url = oAuthURL + "/r/" + subreddit + "/hot?limit=1";
+        String url = CONSTANTS.oAuthURL + "/r/" + subreddit + "/hot?limit=1";
 
         try {
             HttpRequest getRequest = null;
