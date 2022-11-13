@@ -7,6 +7,7 @@ public class RedditAPI  implements RedditDao{
 
     @Override
     public String downloadImagesFromSubreddit(String subreddit, int amountOfPostsToSearch, String[] titleFilters) {
+
         return null;
     }
 }
